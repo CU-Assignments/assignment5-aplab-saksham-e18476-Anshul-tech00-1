@@ -1,0 +1,47 @@
+Problem1: Sort Colors
+def sortColors(nums):
+    low, mid, high = 0, 0, len(nums) - 1
+    
+    while mid <= high:
+        if nums[mid] == 0:
+            nums[low], nums[mid] = nums[mid], nums[low]
+            low += 1
+            mid += 1
+        elif nums[mid] == 1:
+            mid += 1
+        else:
+            nums[mid], nums[high] = nums[high], nums[mid]
+            high -= 1
+    
+    return nums
+Problem2: Kth largest element in an array
+import random
+
+def findKthLargest(nums, k):
+    def partition(left, right, pivot_index):
+        pivot = nums[pivot_index]
+        nums[pivot_index], nums[right] = nums[right], nums[pivot_index]
+        store_index = left
+        for i in range(left, right):
+            if nums[i] > pivot:  # For kth largest, we want greater elements on the left
+                nums[store_index], nums[i] = nums[i], nums[store_index]
+                store_index += 1
+        nums[right], nums[store_index] = nums[store_index], nums[right]
+        return store_index
+    
+    def quickselect(left, right, k):
+        if left == right:
+            return nums[left]
+        
+        pivot_index = random.randint(left, right)
+        pivot_index = partition(left, right, pivot_index)
+        
+        if pivot_index == k:
+            return nums[pivot_index]
+        elif pivot_index < k:
+            return quickselect(pivot_index + 1, right, k)
+        else:
+            return quickselect(left, pivot_index - 1, k)
+    
+    return quickselect(0, len(nums) - 1, len(nums) - k)
+
